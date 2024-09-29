@@ -13,11 +13,9 @@ webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
 
 def get_desktop_path():
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
-    print(f"Preuzimanje desktop putanje: " + desktop)
     return os.path.join(desktop, 'Songs.txt')
 
 def read_urls_from_file():
-    
     file_path = get_desktop_path() 
     urls = []
     if os.path.exists(file_path):
@@ -28,14 +26,10 @@ def read_urls_from_file():
                     urls.append(parts[2])
     else:
         print(f"Nema fajla: {file_path}")
-    print("URLS:")
-    for url in urls:
-        print(url)
         
     return urls
 
 def open_youtube():
-    print("pokretanje YTa")
     urls = read_urls_from_file()
     if urls:
         url = random.choice(urls)
@@ -44,7 +38,6 @@ def open_youtube():
         print("The playlist is empty!")
 
 def close_chrome():
-    print("Ubijanje hroma")
     subprocess.call(["taskkill", "/IM", "chrome.exe", "/F"])
 
 # Function to update schedule with new times
@@ -85,7 +78,7 @@ def run_schedule():
 
 # Tkinter GUI
 root = tk.Tk()
-root.title("Gym Music Scheduler")
+root.title("Circus Beats")
 
 # Start time input
 start_label = tk.Label(root, text="Start")
