@@ -35,7 +35,7 @@ def open_youtube():
         url = random.choice(urls)
         webbrowser.get('chrome').open(url)
     else:
-        print("The playlist is empty!")
+        print("Playlista je prazna!")
 
 def close_chrome():
     subprocess.call(["taskkill", "/IM", "chrome.exe", "/F"])
@@ -49,7 +49,7 @@ def update_schedule(start_time, end_time):
     schedule.every().day.at(start_time).do(open_youtube)
     schedule.every().day.at(end_time).do(close_chrome)
 
-    print(f"New schedule set: Start at {start_time}, End at {end_time}")
+    print(f"Nov raspred: Start u {start_time}, kraj u {end_time}")
 
 # Function triggered when 'Save' is pressed
 def save_schedule():
@@ -58,9 +58,9 @@ def save_schedule():
     
     if validate_time_format(start_time) and validate_time_format(end_time):
         update_schedule(start_time, end_time)
-        messagebox.showinfo("Schedule Updated", f"New schedule: Start at {start_time}, End at {end_time}")
+        messagebox.showinfo("Raspored snimljen", f"Nov raspored: Start u {start_time}, kraj u {end_time}")
     else:
-        messagebox.showerror("Invalid Time Format", "Please enter time in the format HH:MM")
+        messagebox.showerror("Neispravan format", "Deder upiši u formatu HH:MM")
 
 # Function to validate time format (HH:MM)
 def validate_time_format(time_str):
@@ -86,18 +86,18 @@ start_label.grid(row=0, column=0, padx=10, pady=10)
 
 start_time_entry = tk.Entry(root)
 start_time_entry.grid(row=0, column=1, padx=10, pady=10)
-start_time_entry.insert(0, "06:00")  # Default start time
+start_time_entry.insert(0, "06:00") 
 
 # End time input
-end_label = tk.Label(root, text="End")
+end_label = tk.Label(root, text="Kraj")
 end_label.grid(row=1, column=0, padx=10, pady=10)
 
 end_time_entry = tk.Entry(root)
 end_time_entry.grid(row=1, column=1, padx=10, pady=10)
-end_time_entry.insert(0, "00:15")  # Default end time
+end_time_entry.insert(0, "21:00")
 
 # Save button
-save_button = tk.Button(root, text="Save", command=save_schedule)
+save_button = tk.Button(root, text="Snimi", command=save_schedule)
 save_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
 
 # Start the schedule checking in a separate thread
