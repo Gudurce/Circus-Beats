@@ -3,13 +3,14 @@ import time
 import subprocess
 import schedule
 import random
-import tkinter as tk
-from tkinter import messagebox
 import threading
 import os
+import tkinter as tk
+import psutil
+from tkinter import messagebox
 
-chrome_path = "C:/Program Files/Google/Chrome/Application/chrome.exe"
-webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+firefox_path = "C:/Program Files/Mozilla Firefox/firefox.exe"
+webbrowser.register('firefox', None, webbrowser.BackgroundBrowser(firefox_path))
 
 def get_desktop_path():
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
@@ -33,21 +34,21 @@ def open_youtube():
     urls = read_urls_from_file()
     if urls:
         url = random.choice(urls)
-        webbrowser.get('chrome').open(url)
+        webbrowser.get('firefox').open(url)
     else:
         print("Playlista je prazna!")
 
-def close_chrome():
-    subprocess.call(["taskkill", "/IM", "chrome.exe", "/F"])
+def close_firefox():  
+    for process in psutil.process_iter(['pid', 'name']):
+        if 'firefox' in process.info['name'].lower():
+            process.terminate()
+            print(f"Terminated: {process.info['name']} (PID: {process.info['pid']})")
 
-# Function to update schedule with new times
 def update_schedule(start_time, end_time):
-    # Clear any previously set schedules
     schedule.clear()
 
-    # Set new schedule with updated times
     schedule.every().day.at(start_time).do(open_youtube)
-    schedule.every().day.at(end_time).do(close_chrome)
+    schedule.every().day.at(end_time).do(close_firefox)
 
     print(f"Nov raspred: Start u {start_time}, kraj u {end_time}")
 
@@ -74,7 +75,7 @@ def validate_time_format(time_str):
 def run_schedule():
     while True:
         schedule.run_pending()
-        time.sleep(0.1)
+        time.sleep(1)
 
 # Tkinter GUI
 root = tk.Tk()
