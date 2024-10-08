@@ -1,6 +1,6 @@
 import webbrowser
 import time
-import subprocess
+from datetime import datetime
 import schedule
 import random
 import threading
@@ -18,31 +18,37 @@ def get_desktop_path():
 
 def read_urls_from_file():
     file_path = get_desktop_path() 
-    urls = []
+    songs = []
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
             for line in file:
                 parts = line.strip().split(' - ')
                 if len(parts) == 3:
-                    urls.append(parts[2])
+                    song_name = f"{parts[0]} - {parts[1]}"
+                    url = parts[2]
+                    songs.append((song_name, url))
     else:
-        print(f"Nema fajla: {file_path}")
-        
-    return urls
+        print(f"{get_current_time()} -- Nema fajla: {file_path}")
+    
+    return songs
 
 def open_youtube():
-    urls = read_urls_from_file()
-    if urls:
-        url = random.choice(urls)
+    songs = read_urls_from_file()
+    if songs:
+        song_name, url = random.choice(songs)
+        uqwe = url.strip().split
         webbrowser.get('firefox').open(url)
+        print(f"{get_current_time()} -- FireFox je pokrenut")
+        print(f"{get_current_time()} -- Pustena je pesma: {song_name} - {url}")
     else:
-        print("Playlista je prazna!")
+        print(f"{get_current_time()} -- Playlista je prazna!")
 
 def close_firefox():  
     for process in psutil.process_iter(['pid', 'name']):
         if 'firefox' in process.info['name'].lower():
             process.terminate()
-            print(f"Terminated: {process.info['name']} (PID: {process.info['pid']})")
+    print(f"{get_current_time()} -- Firefox je ugasen")
+
 
 def update_schedule(start_time, end_time):
     schedule.clear()
@@ -50,7 +56,7 @@ def update_schedule(start_time, end_time):
     schedule.every().day.at(start_time).do(open_youtube)
     schedule.every().day.at(end_time).do(close_firefox)
 
-    print(f"Nov raspred: Start u {start_time}, kraj u {end_time}")
+    print(f"{get_current_time()} -- Nov raspred: Start u {start_time}, kraj u {end_time}")
 
 # Function triggered when 'Save' is pressed
 def save_schedule():
@@ -70,6 +76,10 @@ def validate_time_format(time_str):
         return True
     except ValueError:
         return False
+
+def get_current_time():
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return current_time
 
 # Function to continuously check and run scheduled tasks
 def run_schedule():
